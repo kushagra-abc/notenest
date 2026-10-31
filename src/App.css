@@ -1,38 +1,62 @@
-.App {
-  text-align: center;
+
+/* General application styling */
+body {
+    margin: 0;
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Main application container */
+.container {
+    max-width: 1200px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Note cards */
+.card {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
-.App-link {
-  color: #61dafb;
+/* Note titles */
+.card-title {
+    font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Note descriptions */
+.card-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* Form controls */
+.form-control {
+    border-radius: 6px;
+}
+
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 6px;
+}
+
+/* Edit modal */
+.modal-content {
+    border: none;
+    border-radius: 10px;
+}
+
+/* Page headings */
+h2 {
+    font-weight: 600;
 }

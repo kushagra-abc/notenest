@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import NoteContext from '../context/notes/noteContext';
 
 const Signup = () => {
+
     const [credentials, setCredentials] = useState({
         name: "",
         email: "",
@@ -9,19 +12,22 @@ const Signup = () => {
         cpassword: ""
     });
 
-    let history = useHistory();
+    const [error, setError] = useState("");
+
+    const history = useHistory();
+
+    const { getUser } = useContext(NoteContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
 
-        // 1. Check if passwords match
         if (credentials.password !== credentials.cpassword) {
-            alert("Passwords do not match!");
+            setError("Passwords do not match!");
             return;
         }
 
         try {
-            // 2. Fetch call to Express backend
             const response = await fetch("http://localhost:5000/api/auth/createuser", {
                 method: "POST",
                 headers: {
@@ -35,33 +41,50 @@ const Signup = () => {
             });
 
             const json = await response.json();
-            console.log("Response from server:", json);
 
-            if (json.authtoken) {
-                // Save auth token and redirect to home route
-                localStorage.setItem('token', json.authtoken);
-                alert("Account Created Successfully!");
+            if (!response.ok || !json.authtoken) {
+                const message = json.errors
+                    ? json.errors.map(err => err.msg).join(", ")
+                    : json.error || "Unable to create account";
+
+                setError(message);
+                return;
+            }
+
+            localStorage.setItem('token', json.authtoken);
+
+            const authenticated = await getUser();
+
+            if (authenticated) {
                 history.push("/");
             } else {
-                alert(json.error || "Invalid Details");
+                setError("Account created, but login verification failed. Please log in.");
             }
+
         } catch (error) {
-            console.error("Error signing up:", error);
-            alert("Unable to connect to backend server.");
+            setError("Unable to connect to the backend server.");
         }
-    }
+    };
 
     const onChange = (e) => {
         setCredentials({
             ...credentials,
             [e.target.name]: e.target.value
         });
-    }
+    };
 
     return (
         <div className="container mt-3">
-            <h2>Create an Account</h2>
+            <h2>Create a NoteNest Account</h2>
+
+            {error && (
+                <div className="alert alert-danger" role="alert">
+                    {error}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit}>
+
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name</label>
                     <input
@@ -120,9 +143,10 @@ const Signup = () => {
                 <button type="submit" className="btn btn-primary">
                     Sign Up
                 </button>
+
             </form>
         </div>
-    )
-}
+    );
+};
 
 export default Signup;
